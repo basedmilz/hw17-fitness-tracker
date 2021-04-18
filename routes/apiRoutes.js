@@ -8,45 +8,65 @@ const { Workout } = require('../models')
 router.get('/api/workouts', (req, res) => {
     Workout.aggregate([{
         $addFields: {
-            totalDuration: { $sum: '$exercise.duration'}
+            totalDuration: { $sum: '$exercise.duration' }
         }
     }])
-    .then(dbWorkout => {
-        res.json(dbWorkout)
-    })
-    .catch(err => {
-        res.status(400).(err);
-    });
-            
-        
-        
-            
+        .then(dbWorkout => {
+            res.json(dbWorkout);
+        })
+        .catch(err => {
+            res.status(400).json(err);
+        });
 });
-// async createWorkout(data = {}) {
-//     const res = await fetch("/api/workouts", {
-//       method: "POST",
-//       body: JSON.stringify(data),
-//       headers: { "Content-Type": "application/json" }
-//     });
+
+router.get('/api/workouts', (req, res) => {
+    Workout.find({})
+        .then(dbWorkout => {
+            res.json(dbWorkout)
+        })
+        .catch(err => {
+            res.status(400).json(err);
+        })
+});
+
+router.put('/api/workouts/:id', ({ body, params }, res) => {
+    Workout.findOneAndUpdate({ _id: params.id },
+        { $push: { exercises: body } },
+        { new: true })
+        .then(dbWorkout => {
+            res.json(dbWorkout);
+        })
+        .catch(err => {
+            res.json(err);
+        });
+
+});
+
+router.post('/api/workouts', ({ body }, res) => {
+    Workout.create(body)
+        .then(dbWorkout => {
+            res.json(dbWorkout);
+        })
+        .catch(err => {
+            res.json(err)
+        });
+    });
 
 
 
-// const res = await fetch("/api/workouts/" + id, {
-//       method: "PUT",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(data)
-//     });
 
-router.put('/api/workouts/:id')
+router.get('/api/workout/range', (req, res) => {
+    Workout.aggregate([{
+        $addFields: {
+            totalDuration: { $sum: 'exercise.duration' }
+        }
+    }])
+        .then(dbWorkout => {
+            res.json(dbWorkout);
+        })
+        .catch(err => {
+            res.status(400).json(err);
+        });
+    
+});
 
-
-// async getWorkoutsInRange() {
-//     const res = await fetch(`/api/workouts/range`);
-//     const json = await res.json();
-
-//     return json;
-//   },
-// };
-router.get('/api/workout/range', (req, res)=>{
-
-} )
