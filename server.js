@@ -9,3 +9,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(express.static("public"));
+
+mongoose.connect(
+    process.env.MONGODB_URI || 'mongodb://localhost/workout',
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false
+    }
+  );
+
+  app.use(require('./routes/htmlroutes'));
+
+
+  app.listen(PORT, () => {
+      console.log('App running on http://localhost:' + PORT)
+  });
+
+//   mongodb+srv://basedmilz:<>@cluster0.q9zzw.mongodb.net/workout?retryWrites=true&w=majority
