@@ -19,7 +19,7 @@ const exerciseSchema = new Schema({
     type: Date,
     default: Date.now,
     },
-  exercise: [
+  exercises: [
     {
       type: {
         type: String,
@@ -57,6 +57,6 @@ const exerciseSchema = new Schema({
       
 });
 
-const Exercise = mongoose.model("Exercise", exerciseSchema);
+const Workout = mongoose.model("Workout", exerciseSchema);
 
-module.exports = Exercise;
+module.exports = Workout;
