@@ -1,18 +1,18 @@
 const router = require('express').Router();
 
-const { Workout } = require('../models')
+const db = require('../models');
 
 
 
 // Get
 router.get('/api/workouts', (req, res) => {
-    Workout.aggregate([{
+    db.Exercise.aggregate([{
         $addFields: {
             totalDuration: { $sum: '$exercise.duration' }
         }
     }])
-        .then(dbWorkout => {
-            res.json(dbWorkout);
+        .then((dbExercise) => {
+            res.json(dbExercise);
         })
         .catch(err => {
             res.status(400).json(err);
@@ -20,21 +20,21 @@ router.get('/api/workouts', (req, res) => {
 });
 
 router.get('/api/workouts', (req, res) => {
-    Workout.find({})
-        .then(dbWorkout => {
-            res.json(dbWorkout)
+    db.Exercise.find({})
+        .then((dbExercise) => {
+            res.json(dbExercise)
         })
         .catch(err => {
             res.status(400).json(err);
         })
 });
 
-router.put('/api/workouts/:id', ({ body, params }, res) => {
-    Workout.findOneAndUpdate({ _id: params.id },
-        { $push: { exercises: body } },
-        { new: true })
-        .then(dbWorkout => {
-            res.json(dbWorkout);
+router.put('/api/workouts/:id', ( req , res) => {
+    db.Exercise.findOneAndUpdate({ _id: req.params.id },
+        { $push: { exercise:{...req.body } }})
+        // { new: true })
+        .then((dbExercise) => {
+            res.json(dbExercise);
         })
         .catch(err => {
             res.json(err);
@@ -43,9 +43,9 @@ router.put('/api/workouts/:id', ({ body, params }, res) => {
 });
 
 router.post('/api/workouts', ({ body }, res) => {
-    Workout.create(body)
-        .then(dbWorkout => {
-            res.json(dbWorkout);
+    db.Exercise.create(body)
+        .then((dbExercise) => {
+            res.json(dbExercise);
         })
         .catch(err => {
             res.json(err)
@@ -55,14 +55,14 @@ router.post('/api/workouts', ({ body }, res) => {
 
 
 
-router.get('/api/workout/range', (req, res) => {
-    Workout.aggregate([{
+router.get('/api/workouts/range', (req, res) => {
+    db.Exercise.aggregate([{
         $addFields: {
             totalDuration: { $sum: 'exercise.duration' }
         }
     }])
-        .then(dbWorkout => {
-            res.json(dbWorkout);
+        .then((dbExercise) => {
+            res.json(dbExercise);
         })
         .catch(err => {
             res.status(400).json(err);
@@ -70,3 +70,4 @@ router.get('/api/workout/range', (req, res) => {
     
 });
 
+module.exports = router;
