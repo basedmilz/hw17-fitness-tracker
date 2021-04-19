@@ -8,7 +8,7 @@ const db = require('../models');
 router.get('/api/workouts', (req, res) => {
     db.Workout.aggregate([{
         $addFields: {
-            totalDuration: { $sum: '$exercise.duration' }
+            totalDuration: { $sum: '$exercises.duration' }
         }
     }])
         .then((dbExercise) => {
